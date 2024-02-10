@@ -18,12 +18,53 @@ module.exports = () => {
       path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
+
+            // HTML Webpack plugin to generate HTML file
+            new HtmlWebpackPlugin({
+              template: './src/index.html',
+              filename: 'index.html',
+              chunks: ['main']
+            }),
+            // Webpack PWA Manifest plugin for generating manifest.json
+            new WebpackPwaManifest({
+              name: 'J.A.T.E', // your app name
+              short_name: 'J.A.T.E', // shorter version of your app name
+              description: 'Just Another Text Editor',
+              background_color: '#ffffff',
+              theme_color: '#ffffff',
+              icons: [
+                {
+                  src: path.resolve('src/assets/icons/icon_96x96.png'),
+                  sizes: [96, 128, 192, 256, 384, 512], // multiple sizes for better compatibility
+                  destination: path.join('assets', 'icons'),
+                },
+              ],
+            }),
+            // Workbox InjectManifest plugin for service worker
+            new InjectManifest({
+              swSrc: './src-sw.js',
+              swDest: 'src-sw.js',
+            }),
       
     ],
 
     module: {
       rules: [
-        
+        // Add CSS loaders and babel to webpack
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+            },
+          },
+        },
       ],
     },
   };
