@@ -28,17 +28,14 @@ registerRoute(({ request }) => request.mode === 'navigate', pageCache);
 
 // TODO: Implement asset caching
 // Cache assets using Workbox strategies
-registerRoute(
-  /\.(?:js|css|html|png|jpg|jpeg|svg)$/,
-  new CacheFirst({
-    cacheName: 'assets-cache',
-    plugins: [
-      new CacheableResponsePlugin({
-        statuses: [0, 200],
-      }),
-      new ExpirationPlugin({
-        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-      }),
-    ],
-  })
-);
+  registerRoute(
+    ({ request }) => ['style', 'script', 'worker'].includes(request.destination),
+    new StaleWhileRevalidate({
+      cacheName: 'asset-cache',
+      plugins: [
+        new CacheableResponsePlugin({
+          statuses: [0, 200],
+        }),
+      ],
+    })
+  );

@@ -17,17 +17,12 @@ butInstall.addEventListener('click', async () => {
       return;
     }
     promptEvent.prompt();
-    // Wait for the user to respond to the prompt
-    const choiceResult = await promptEvent.userChoice;
-    console.log('User choice:', choiceResult);
-    // Clear the deferredPrompt variable
+
     window.deferredPrompt = null;
 
-
-});
-
-
-// TODO: Add an handler for the `appinstalled` event
-window.addEventListener('appinstalled', (event) => {
-    console.log('App installed:', event);
-});
+    butInstall.classList.toggle('hidden', true);
+  });
+  
+  window.addEventListener('appinstalled', (event) => {
+    window.deferredPrompt = null;
+  });
